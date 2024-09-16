@@ -211,6 +211,7 @@ class Autopet_baseline:
         self.input_path = "/input/"
         # according to the specified grand-challenge interfaces
         self.output_path = "/output/images/automated-petct-lesion-segmentation/"
+        os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
         self.nii_path = (
             "/opt/algorithm/nnUNet_raw_data_base/nnUNet_raw_data/Task001_TCIA/imagesTs"
         )
@@ -299,14 +300,15 @@ class Autopet_baseline:
         gc.collect()
         return tumourseg_pred
 
-    def predict(self):
+    def predict(self, uuid=None):
         print("nnUNet segmentation starting!")
         
         rw = SimpleITKIO()
         input_fnames = [os.path.join(self.nii_path, "TCIA_001_0000.nii.gz"),
                         os.path.join(self.nii_path, "TCIA_001_0001.nii.gz")
                         ]
-        output_fname = os.path.join(self.result_path, self.nii_seg_file)
+        #output_fname = os.path.join(self.result_path, self.nii_seg_file)
+        output_fname = os.path.join(self.output_path, uuid + ".mha")
         
         im, prop = rw.read_images(input_fnames)
         
@@ -323,6 +325,15 @@ class Autopet_baseline:
 
         # now save
         rw.write_seg(tumourseg_pred, output_fname, prop)
+        
+        """
+        # Hopefully this works.
+        pred_image = SimpleITK.GetImageFromArray(tumourseg_pred.astype(np.uint8, copy=False))
+        pet_img = SimpleITK.ReadImage(input_fnames[-1])
+        pred_image.CopyInformation(pet_img)
+        mha_output_fname = os.path.join(self.output_path, uuid + ".mha")
+        SimpleITK.WriteImage(pred_image, mha_output_fname, True)
+        """
         print("Prediction finished")
 
     def save_datacentric(self, value: bool):
@@ -339,10 +350,10 @@ class Autopet_baseline:
         print("Start processing")
         uuid = self.load_inputs()
         print("Start prediction")
-        self.predict()
+        self.predict(uuid=uuid)
         print("Start output writing")
         self.save_datacentric(False)
-        self.write_outputs(uuid)
+        #self.write_outputs(uuid)
 
 
 if __name__ == "__main__":

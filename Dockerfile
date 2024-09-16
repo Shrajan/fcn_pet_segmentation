@@ -6,19 +6,19 @@ RUN apt-get update && apt-get install -y git
 RUN git config --global advice.detachedHead false && \
     git clone https://github.com/Shrajan/nnUNet.git /opt/algorithm/nnunet/ && \
     cd /opt/algorithm/nnunet/ && \
-    pip3 install -e /opt/algorithm/nnunet
+    pip install -e /opt/algorithm/nnunet
 
 # Configure Git, clone the dynamic architecture repository.
 RUN git config --global advice.detachedHead false && \
     git clone https://github.com/Shrajan/dynamic-network-architectures /opt/algorithm/dynamic-network-architectures/ && \
     cd /opt/algorithm/dynamic-network-architectures/ && \
-    pip3 install -e /opt/algorithm/dynamic-network-architectures
+    pip install -e /opt/algorithm/dynamic-network-architectures
 
 # Configure Git, clone the batchgenerators repository.
 RUN git config --global advice.detachedHead false && \
     git clone https://github.com/MIC-DKFZ/batchgeneratorsv2.git /opt/algorithm/batchgeneratorsv2/ && \
     cd /opt/algorithm/batchgeneratorsv2/ && \
-    pip3 install -e /opt/algorithm/batchgeneratorsv2
+    pip install -e /opt/algorithm/batchgeneratorsv2
 
 RUN groupadd -r algorithm && \
     useradd -m --no-log-init -r -g algorithm algorithm && \
