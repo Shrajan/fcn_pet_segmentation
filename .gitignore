@@ -1,3 +1,9 @@
+# Weights folder
+nnUNet_results
+
+# Pytorch model files
+*.pth
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
